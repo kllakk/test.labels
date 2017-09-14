@@ -55,6 +55,14 @@ class DB {
     }
 }
 
+class Label {
+    public function __construct($properties = []){
+        foreach($properties as $key => $value){
+            $this->{$key} = $value;
+        }
+    }
+}
+
 class Labels {
     function __construct() {
         DB::CreateLabelsTable();
@@ -62,9 +70,10 @@ class Labels {
 
     public function ToDo() {
         foreach (DB::GetLabelsData() as $row) {
+            $label = new Label($row);
             $todo = ToDoFactory::create($row['todo']);
             if ($todo != null)
-                $todo->DoIt($row['label'], $row['id']);
+                $todo->DoIt($label);
         }
     }
 }
@@ -93,27 +102,27 @@ class ToDoFactory {
 }
 
 interface ITodo {
-    public function DoIt($label, $id);
+    public function DoIt($label);
 }
 
 class Burn implements ITodo {
-    public function DoIt($label, $id) {
-        DB::ResetTodo($id);
-        printf("The %s label is burned\n", $label);
+    public function DoIt($label) {
+        DB::ResetTodo($label->id);
+        printf("The %s label is burned\n", $label->label);
     }
 }
 
 class Hide implements ITodo {
-    public function DoIt($label, $id) {
-        DB::ResetTodo($id);
-        printf("The %s label is hidden\n", $label);
+    public function DoIt($label) {
+        DB::ResetTodo($label->id);
+        printf("The %s label is hidden\n", $label->label);
     }
 }
 
 class Show implements ITodo {
-    public function DoIt($label, $id) {
-        DB::ResetTodo($id);
-        printf("The %s label is shown\n", $label);
+    public function DoIt($label) {
+        DB::ResetTodo($label->id);
+        printf("The %s label is shown\n", $label->label);
     }
 }
 
