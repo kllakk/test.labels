@@ -101,7 +101,7 @@ class ToDoFactory {
     }
 }
 
-interface ITodo {
+interface ITodo { // todo
     public function DoIt($label);
 }
 
